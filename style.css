@@ -1,0 +1,52 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+}
+nav {
+  background-color: #c4c4c4;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.banner {
+  background-color: #969696;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.carosoul {
+  background-color: brown;
+  height: 400px;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: scroll;
+  padding: 50px;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 50px;
+}
+.card1 {
+  width: 300px;
+  height: 400px;
+  background-color: aqua;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: start;
+  flex-direction: column;
+  padding: 0px;
+}
+.card1 .card1img {
+  background-image: url(https://tse1.mm.bing.net/th/id/OIP.8nKpTNL2k_6eJUVbQnJVpgHaJ4?r=0&pid=Api);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size:contain;
+  width: 200px;
+  height: 300px;
+  border-radius: 16px;
+  background-color: blue;
+}
