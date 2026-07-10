@@ -35,10 +35,11 @@ nav {
   height: 400px;
   background-color: aqua;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: start;
   flex-direction: column;
   padding: 0px;
+    border-radius: 16px;
 }
 .card1 .card1img {
   background-image: url(https://tse1.mm.bing.net/th/id/OIP.8nKpTNL2k_6eJUVbQnJVpgHaJ4?r=0&pid=Api);
