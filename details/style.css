@@ -12,11 +12,32 @@ nav {
 }
 
 .banner {
-  background-color: #969696;
+  background-color: rgba(150, 150, 150,0.7);
   width: 100%;
-  height: 400px;
+  height: 600px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  background-image: url(https://tse1.mm.bing.net/th/id/OIP.8nKpTNL2k_6eJUVbQnJVpgHaJ4?r=0&pid=Api);
+
+  position: relative;
+}
+.bannerIMG{
+  filter: blur(8px) brightness(30%);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size:cover;
+  width: 100%;
+  height: 600px;
+  position: absolute;
+}
+#bannerinfo{
+  position: absolute;
+  background-color: rgba(12, 12, 12, 0.5);
+  width: 100%;
+  height: 600px;
+  display: flex;
+  justify-content: space-evenly;
   align-items: center;
 }
 .carosoul {
@@ -49,4 +70,14 @@ nav {
   height: 300px;
   border-radius: 16px;
   background-color: blue;
+}
+
+.posterIMG{
+    background-image: url("../ostsfandy2.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size:contain;
+  background-color: #c4c4c4;
+  width: 300px;
+  height: 400px;
 }
