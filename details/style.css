@@ -83,7 +83,23 @@ nav {
 }
 #infoBox{
   color: aliceblue;
-
   height: 400px;
   width: 70%;
+}
+#creators{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+}
+.creator{
+    display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+}
+.creator p{
+    margin: 8px;
 }
