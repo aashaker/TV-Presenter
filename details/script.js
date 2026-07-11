@@ -28,9 +28,16 @@ async function getinfo() {
       banner.style.backgroundImage=`url(https://image.tmdb.org/t/p/w600_and_h900_face/${data.backdrop_path})`
       posterIMG.style.backgroundImage=`url(https://image.tmdb.org/t/p/w600_and_h900_face/${data.poster_path})`
       thingName.innerHTML=data.name
-    
-    
-    
+      phrase.innerHTML=`"" ${data.tagline} ""`
+      overView.innerHTML =data.overview
+      let genrasARR=data.genres
+      let genrasTXT=data.genres[0].name
+      for (let i = 1;i < genrasARR.length;i++){
+      genrasTXT += `, ${genrasARR[i].name}`
+      console.log(genrasTXT)
+        }
+        genras.innerHTML=genrasTXT
+      console.log(data.genres[0])
     
     }
   } catch (error) {
@@ -52,9 +59,9 @@ async function getinfo() {
       castdata.cast.forEach((person) => {
         if (thingTYPE =="tv"){
           let roles=person.roles[0].character
-          for (let i = 1;i < person.roles.length;i++){
-            roles += person.roles[i].character
-          }
+          // for (let i = 1;i < person.roles.length;i++){
+          //   roles += person.roles[i].character
+          // }
           castCards(person.name, person.profile_path,roles,person.id)
         }
         else{
@@ -73,7 +80,7 @@ async function getinfo() {
 
 function castCards(name, image, chara,id) {
   if (image==null){
-    console.log("ostafandy-ification");
+    // console.log("ostafandy-ification");
       caraCAST.innerHTML = caraCAST.innerHTML + `        
             <div class="card1" id='${id}' onclick="window.location.href='./details/index.html?id=${id}'">
             <div class="card1img" style="background-image: url('../ostafandy.jpg')"></div>
