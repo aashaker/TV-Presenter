@@ -21,6 +21,14 @@
         <div id="infoBox">
         <h1 id="thingName">ostsfandy</h1>
         <p id="phrase">""SQUACK""</p>
+        <div id="midSection">
+                    <div id="score">
+            <p>67%</p>
+        </div>
+        <div id="playbtn" role="button" tabindex="0"><div class="arrow-right"></div><p>play trailer</p></div>
+        
+        </div>
+
         <p id="genras">parrot romance, bird comedy, bird thriller</p>
         <p id="overView">just bird nonsense, and even more bird nonsense, and even more bird nonsense, and even more bird nonsense, and even more bird nonsense, and even more bird nonsense, and even more bird nonsense, and even more bird nonsense, </p>
         
@@ -39,8 +47,16 @@
     <h1>Cast</h1>
     <div class="carosoul" id="caraCAST">
     </div>
-    
 
+    <div id="trailerModal" class="trailer-modal hidden" aria-hidden="true">
+        <div class="trailer-modal__content">
+            <button id="closeTrailerModal" class="trailer-modal__close" aria-label="Close trailer">×</button>
+            <div class="trailer-modal__frame-wrap">
+                <iframe id="trailerFrame" title="Trailer video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    
 
     <script src="script.js"></script>
 </body>

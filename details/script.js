@@ -8,7 +8,17 @@ const banner = document.querySelector(".bannerIMG");
 const posterIMG = document.querySelector(".posterIMG");
 const thingName = document.querySelector("#thingName");
 const creators = document.querySelector("#creators");
-let creditsType = 0
+const score = document.querySelector("#score");
+const scoreP = document.querySelector("#score P");
+const phrase = document.querySelector("#phrase");
+const overView = document.querySelector("#overView");
+const genras = document.querySelector("#genras");
+const playBtn = document.getElementById("playbtn");
+const trailerModal = document.getElementById("trailerModal");
+const closeTrailerModal = document.getElementById("closeTrailerModal");
+const trailerFrame = document.getElementById("trailerFrame");
+let creditsType = 0;
+let trailerKey = null;
 
 if(thingTYPE=='tv'){
   creditsType = 'aggregate_credits';
@@ -18,6 +28,37 @@ else{
   creditsType = 'credits'
   getinfoM();
 }
+
+function openTrailerModal() {
+  if (!trailerKey) {
+    alert("No trailer is available for this title yet.");
+    return;
+  }
+
+  trailerFrame.src = `https://www.youtube.com/embed/${trailerKey}?autoplay=1`;
+  trailerModal.classList.remove("hidden");
+  trailerModal.setAttribute("aria-hidden", "false");
+}
+
+function closeTrailerModalHandler() {
+  trailerFrame.src = "";
+  trailerModal.classList.add("hidden");
+  trailerModal.setAttribute("aria-hidden", "true");
+}
+
+playBtn?.addEventListener("click", openTrailerModal);
+playBtn?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openTrailerModal();
+  }
+});
+closeTrailerModal?.addEventListener("click", closeTrailerModalHandler);
+trailerModal?.addEventListener("click", (event) => {
+  if (event.target === trailerModal) {
+    closeTrailerModalHandler();
+  }
+});
 
 async function getinfoS() {
   try {
@@ -43,7 +84,9 @@ async function getinfoS() {
       creatorsTXT.forEach(creator=>{
         generateCreators(creator.name,"creator",creator.id);
       })
+      generateScore(data.vote_average)
     }
+            
   } catch (error) {
     console.log(error);
   }
@@ -72,7 +115,7 @@ async function getinfoM() {
       const mineuts= data.runtime % 60
       genrasTXT = `${genrasTXT} ⦿ ${hours}h ${mineuts}m `;
       genras.innerHTML=genrasTXT
-
+              generateScore(data.vote_average)
     
     }
   } catch (error) {
@@ -118,6 +161,23 @@ generateCreators(creator.name,creator.job,creator.id)
     console.log(error);
   }
 }
+async function getVideo() {
+  try {
+    const response1 = await fetch(
+      `https://api.themoviedb.org/3/${thingTYPE}/${thingID}/videos?api_key=${api_key}`
+    );
+      console.log(`https://api.themoviedb.org/3/${thingTYPE}/${thingID}/videos?api_key=${api_key}`)
+    if (response1.ok) {
+      const data = await response1.json();
+      const trailer = data.results?.find((v) => v.type === "Trailer" && v.site === "YouTube")
+        || data.results?.find((v) => v.site === "YouTube");
+      trailerKey = trailer?.key ?? null;
+      if (trailerKey) console.log(`found trailer key: ${trailerKey}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 
@@ -151,4 +211,8 @@ function generateCreators(name , role , id){
   `
 }
 
+function generateScore(score){
+  scoreP.innerHTML= score + "%";
+}
 getcast();
+getVideo();
