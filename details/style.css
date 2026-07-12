@@ -194,3 +194,151 @@ nav {
 #trailerFrame {
   border: 0;
 }
+
+.episodes-section {
+  padding: 32px 24px 48px;
+  background: #111;
+  color: #f5f5f5;
+}
+
+.episodes-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.episodes-section__header::-webkit-details-marker {
+  display: none;
+}
+
+.episodes-section__header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.seasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.season-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.season-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.season-card__header::-webkit-details-marker {
+  display: none;
+}
+
+.season-card__header h3 {
+  margin: 0 0 4px;
+}
+
+.season-card__header p {
+  margin: 0;
+  color: #c8c8c8;
+  font-size: 0.95rem;
+}
+
+.season-count {
+  background: #2f6fff;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.season-summary {
+  margin: 0 0 16px;
+  color: #d8d8d8;
+  line-height: 1.5;
+}
+
+.episodes-list {
+  display: grid;
+  gap: 12px;
+}
+
+.episode-item {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.episode-item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.episode-number {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #8ec5ff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.episode-rating {
+  font-size: 0.9rem;
+  color: #ffc857;
+  font-weight: 700;
+}
+
+.episode-item h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.episode-item p {
+  margin: 0;
+  color: #e9e9e9;
+  line-height: 1.5;
+}
+
+.season-actions {
+  margin-top: 12px;
+}
+
+.show-more-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #2f6fff;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.show-more-btn:hover {
+  opacity: 0.9;
+}
+
+.episodes-loading,
+.episodes-error,
+.episode-empty {
+  color: #d9d9d9;
+  margin: 0;
+}
+
+.hidden {
+  display: none !important;
+}

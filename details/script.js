@@ -9,7 +9,7 @@ const posterIMG = document.querySelector(".posterIMG");
 const thingName = document.querySelector("#thingName");
 const creators = document.querySelector("#creators");
 const score = document.querySelector("#score");
-const scoreP = document.querySelector("#score P");
+const scoreP = document.querySelector("#score p");
 const phrase = document.querySelector("#phrase");
 const overView = document.querySelector("#overView");
 const genras = document.querySelector("#genras");
@@ -17,20 +17,23 @@ const playBtn = document.getElementById("playbtn");
 const trailerModal = document.getElementById("trailerModal");
 const closeTrailerModal = document.getElementById("closeTrailerModal");
 const trailerFrame = document.getElementById("trailerFrame");
+const episodesSection = document.getElementById("episodesSection");
+const seasonsList = document.getElementById("seasonsList");
 let creditsType = 0;
 let trailerKey = null;
+let seasonDetailsData = [];
+let seasonDisplayCounts = [];
 
 if(thingTYPE=='tv'){
   creditsType = 'aggregate_credits';
   getinfoS();
-}
-else{
+}else{
   creditsType = 'credits'
   getinfoM();
 }
 
 function openTrailerModal() {
-  if (!trailerKey) {
+  if(!trailerKey){
     alert("No trailer is available for this title yet.");
     return;
   }
@@ -46,19 +49,19 @@ function closeTrailerModalHandler() {
   trailerModal.setAttribute("aria-hidden", "true");
 }
 
-playBtn?.addEventListener("click", openTrailerModal);
-playBtn?.addEventListener("keydown", (event) => {
-  if (event.key === "Enter" || event.key === " ") {
+playBtn.onclick = openTrailerModal;
+playBtn.onkeydown = (event) => {
+  if(event.key === "Enter" || event.key === " "){
     event.preventDefault();
     openTrailerModal();
   }
-});
-closeTrailerModal?.addEventListener("click", closeTrailerModalHandler);
-trailerModal?.addEventListener("click", (event) => {
-  if (event.target === trailerModal) {
+};
+closeTrailerModal.onclick = closeTrailerModalHandler;
+trailerModal.onclick = (event) => {
+  if(event.target === trailerModal){
     closeTrailerModalHandler();
   }
-});
+};
 
 async function getinfoS() {
   try {
@@ -85,6 +88,7 @@ async function getinfoS() {
         generateCreators(creator.name,"creator",creator.id);
       })
       generateScore(data.vote_average)
+      loadEpisodesSection(data)
     }
             
   } catch (error) {
@@ -182,7 +186,7 @@ async function getVideo() {
 
 
 function castCards(name, image, chara,id) {
-  if (image==null){
+  if(image==null){
     // console.log("ostafandy-ification");
       caraCAST.innerHTML = caraCAST.innerHTML + `        
             <div class="card1" id='${id}' onclick="window.location.href='./details/index.html?id=${id}'">
@@ -211,8 +215,187 @@ function generateCreators(name , role , id){
   `
 }
 
+async function loadEpisodesSection(showData) {
+  if(!episodesSection || !showData.seasons.length){
+    episodesSection.classList.add("hidden");
+    return;
+  }
+
+  episodesSection.classList.remove("hidden");
+  seasonsList.innerHTML = '<p class="episodes-loading">Loading episodes…</p>';
+
+  try {
+    const seasons = showData.seasons.filter((season) => season.season_number > 0);
+    const seasonDetails = await Promise.all(
+      seasons.map(async (season) => {
+        const response1 = await fetch(
+          `${baseURL}/tv/${thingID}/season/${season.season_number}?api_key=${api_key}`
+        );
+        if(response1.ok){
+          return response1.json();
+        }
+      })
+    );
+
+    seasonDetailsData = seasonDetails;
+    seasonDisplayCounts = seasonDetails.map(() => 10);
+    seasonsList.innerHTML = "";
+
+    seasonDetails.forEach((seasonData, index) => {
+      const seasonMeta = seasons[index];
+      const episodeCount = seasonData.episodes.length;
+      let ep = "";
+      const visible = seasonData.episodes.slice(0, 10);
+
+      visible.forEach((episode) => {
+        ep = ep + `
+          <div class="episode-item">
+            <div class="episode-item__top">
+              <span class="episode-number">EP ${episode.episode_number}</span>
+              <span class="episode-rating">${episode.vote_average ? '⭐ ' + episode.vote_average.toFixed(1) : '⭐ NR'}</span>
+            </div>
+            <h4>${episode.name}</h4>
+            <p>${episode.overview}</p>
+          </div>
+        `;
+      });
+
+      seasonsList.innerHTML = seasonsList.innerHTML + `
+        <details class="season-card" data-season-index="${index}">
+          <summary class="season-card__header">
+            <div>
+              <h3>${seasonMeta.name}</h3>
+              <p>${seasonMeta.air_date}</p>
+            </div>
+            <span class="season-count">${episodeCount} Episodes</span>
+          </summary>
+          <p class="season-summary">${seasonData.overview}</p>
+          <div class="episodes-list">${ep}</div>
+          <div class="season-actions">${seasonDisplayCounts[index] >= episodeCount ? "" : `<button type="button" class="show-more-btn" data-season-index="${index}">Show more</button>`}</div>
+        </details>
+      `;
+    });
+
+    seasonsList.querySelectorAll(".show-more-btn").forEach((button) => {
+      button.onclick = (event) => {
+        event.preventDefault();
+        const index = Number(button.dataset.seasonIndex);
+        const seasonData = seasonDetailsData[index];
+        const episodeCount = seasonData.episodes.length;
+        const currentCount = seasonDisplayCounts[index] || 10;
+        const nextCount = Math.min(currentCount + 10, episodeCount);
+        seasonDisplayCounts[index] = nextCount;
+        const card = seasonsList.querySelector(`.season-card[data-season-index="${index}"]`);
+        const listContainer = card.querySelector(".episodes-list");
+        const actionsContainer = card.querySelector(".season-actions");
+        let ep2 = "";
+        seasonData.episodes.slice(0, nextCount).forEach((episode) => {
+          ep2 = ep2 + `
+            <div class="episode-item">
+              <div class="episode-item__top">
+                <span class="episode-number">EP ${episode.episode_number}</span>
+                <span class="episode-rating">${episode.vote_average ? '⭐ ' + episode.vote_average.toFixed(1) : '⭐ NR'}</span>
+              </div>
+              <h4>${episode.name}</h4>
+              <p>${episode.overview}</p>
+            </div>
+          `;
+        });
+        listContainer.innerHTML = ep2;
+        actionsContainer.innerHTML = nextCount >= episodeCount ? "" : `<button type="button" class="show-more-btn" data-season-index="${index}">Show more</button>`;
+        actionsContainer.querySelector(".show-more-btn").onclick = (event) => {
+          event.preventDefault();
+          const index2 = Number(event.currentTarget.dataset.seasonIndex);
+          const seasonData2 = seasonDetailsData[index2];
+          const episodeCount2 = seasonData2.episodes.length;
+          const currentCount2 = seasonDisplayCounts[index2] || 10;
+          const nextCount2 = Math.min(currentCount2 + 10, episodeCount2);
+          seasonDisplayCounts[index2] = nextCount2;
+          const card2 = seasonsList.querySelector(`.season-card[data-season-index="${index2}"]`);
+          const listContainer2 = card2.querySelector(".episodes-list");
+          const actionsContainer2 = card2.querySelector(".season-actions");
+          let ep3 = "";
+          seasonData2.episodes.slice(0, nextCount2).forEach((episode) => {
+            ep3 = ep3 + `
+              <div class="episode-item">
+                <div class="episode-item__top">
+                  <span class="episode-number">EP ${episode.episode_number}</span>
+                  <span class="episode-rating">${episode.vote_average ? '⭐ ' + episode.vote_average.toFixed(1) : '⭐ NR'}</span>
+                </div>
+                <h4>${episode.name}</h4>
+                <p>${episode.overview}</p>
+              </div>
+            `;
+          });
+          listContainer2.innerHTML = ep3;
+          actionsContainer2.innerHTML = nextCount2 >= episodeCount2 ? "" : `<button type="button" class="show-more-btn" data-season-index="${index2}">Show more</button>`;
+          actionsContainer2.querySelector(".show-more-btn").onclick = (event) => {
+            event.preventDefault();
+            const index3 = Number(event.currentTarget.dataset.seasonIndex);
+            const seasonData3 = seasonDetailsData[index3];
+            const episodeCount3 = seasonData3.episodes.length;
+            const currentCount3 = seasonDisplayCounts[index3] || 10;
+            const nextCount3 = Math.min(currentCount3 + 10, episodeCount3);
+            seasonDisplayCounts[index3] = nextCount3;
+            const card3 = seasonsList.querySelector(`.season-card[data-season-index="${index3}"]`);
+            const listContainer3 = card3.querySelector(".episodes-list");
+            const actionsContainer3 = card3.querySelector(".season-actions");
+            let ep4 = "";
+            seasonData3.episodes.slice(0, nextCount3).forEach((episode) => {
+              ep4 = ep4 + `
+                <div class="episode-item">
+                  <div class="episode-item__top">
+                    <span class="episode-number">EP ${episode.episode_number}</span>
+                    <span class="episode-rating">${episode.vote_average ? '⭐ ' + episode.vote_average.toFixed(1) : '⭐ NR'}</span>
+                  </div>
+                  <h4>${episode.name}</h4>
+                  <p>${episode.overview}</p>
+                </div>
+              `;
+            });
+            listContainer3.innerHTML = ep4;
+            actionsContainer3.innerHTML = nextCount3 >= episodeCount3 ? "" : `<button type="button" class="show-more-btn" data-season-index="${index3}">Show more</button>`;
+            actionsContainer3.querySelector(".show-more-btn").onclick = (event) => {
+              event.preventDefault();
+              const index4 = Number(event.currentTarget.dataset.seasonIndex);
+              const seasonData4 = seasonDetailsData[index4];
+              const episodeCount4 = seasonData4.episodes.length;
+              const currentCount4 = seasonDisplayCounts[index4] || 10;
+              const nextCount4 = Math.min(currentCount4 + 10, episodeCount4);
+              seasonDisplayCounts[index4] = nextCount4;
+              const card4 = seasonsList.querySelector(`.season-card[data-season-index="${index4}"]`);
+              const listContainer4 = card4.querySelector(".episodes-list");
+              const actionsContainer4 = card4.querySelector(".season-actions");
+              let ep5 = "";
+              seasonData4.episodes.slice(0, nextCount4).forEach((episode) => {
+                ep5 = ep5 + `
+                  <div class="episode-item">
+                    <div class="episode-item__top">
+                      <span class="episode-number">EP ${episode.episode_number}</span>
+                      <span class="episode-rating">${episode.vote_average ? '⭐ ' + episode.vote_average.toFixed(1) : '⭐ NR'}</span>
+                    </div>
+                    <h4>${episode.name}</h4>
+                    <p>${episode.overview}</p>
+                  </div>
+                `;
+              });
+              listContainer4.innerHTML = ep5;
+              actionsContainer4.innerHTML = nextCount4 >= episodeCount4 ? "" : `<button type="button" class="show-more-btn" data-season-index="${index4}">Show more</button>`;
+            };
+          };
+        };
+      };
+    });
+  } catch (error) {
+    console.log(error);
+    seasonsList.innerHTML = '<p class="episodes-error">Episodes are not available right now.</p>';
+  }
+}
+
 function generateScore(score){
-  scoreP.innerHTML= score + "%";
+  if(scoreP){
+    scoreP.innerHTML = `${score}%`;
+  }
 }
 getcast();
 getVideo();
