@@ -2,6 +2,8 @@ const baseURL = "https://api.themoviedb.org/3";
 
 const trendingM = document.getElementById("trendingM");
 const trendingS = document.getElementById("trendingS");
+const searchbar = document.getElementById("searchbar");
+
 
 async function getTrendingM() {
   try {
@@ -46,3 +48,10 @@ function generateCards(name, image, date,id,media_type,cara) {
 
 getTrendingM();
 getTrendingS();
+
+
+searchbar.onchange=()=>{
+  let encodedQuery = encodeURIComponent(searchbar.value)
+console.log(encodedQuery)
+  window.location.href=`./search/index.html?query=${encodedQuery}`
+}

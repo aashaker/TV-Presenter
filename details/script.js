@@ -189,17 +189,17 @@ function castCards(name, image, chara,id) {
   if(image==null){
     // console.log("ostafandy-ification");
       caraCAST.innerHTML = caraCAST.innerHTML + `        
-            <div class="card1" id='${id}' onclick="window.location.href='./details/index.html?id=${id}'">
+            <div class="card1" id='${id}'>
             <div class="card1img" style="background-image: url('../ostafandy.jpg')"></div>
-            <a href="">${name}</a>
+            <p>${name}</p>
             <p>${chara}</p>
     </div>`;
   }
   else{
   caraCAST.innerHTML = caraCAST.innerHTML + `        
-            <div class="card1" id='${id}' onclick="window.location.href='./details/index.html?id=${id}'">
+            <div class="card1" id='${id}'>
             <div class="card1img" style="background-image: url('https://image.tmdb.org/t/p/w600_and_h900_face/${image}')"></div>
-            <a href="">${name}</a>
+            <p>${name}</p>
             <p>${chara}</p>
     </div>`;
   }
@@ -399,3 +399,9 @@ function generateScore(score){
 }
 getcast();
 getVideo();
+
+searchbar.onchange=()=>{
+  let encodedQuery = encodeURIComponent(searchbar.value)
+console.log(encodedQuery)
+  window.location.href=`../search/index.html?query=${encodedQuery}`
+}
